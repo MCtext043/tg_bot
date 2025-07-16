@@ -1,5 +1,7 @@
 from aiogram import types
 from keyboards import language_keyboard
+from handlers.start import send_start_screen
+from user_data import user_languages
 
 async def language_callback(callback: types.CallbackQuery):
     if callback.data == "language":
@@ -7,8 +9,12 @@ async def language_callback(callback: types.CallbackQuery):
         await callback.message.answer(text, reply_markup=language_keyboard)
         await callback.answer()
     elif callback.data == "lang_en":
-        await callback.message.answer("Language set to English.")
+        user_languages[callback.from_user.id] = 'en'
+        await callback.message.delete()
+        await send_start_screen(callback.message, lang='en')
         await callback.answer()
     elif callback.data == "lang_ru":
-        await callback.message.answer("Язык установлен: Русский.")
+        user_languages[callback.from_user.id] = 'ru'
+        await callback.message.delete()
+        await send_start_screen(callback.message, lang='ru')
         await callback.answer() 
